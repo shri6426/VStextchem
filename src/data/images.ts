@@ -37,9 +37,9 @@ export const images = {
     tone: 'stone',
   },
   detergent: {
-    src: u('photo-1604335398980-ededcadcc37d'),
-    alt: 'A row of front-loading commercial washing machines',
-    tone: 'stone',
+    src: '/images/detergent.jpg',
+    alt: 'Liquid detergent chemical formulation with fine foam in laboratory glassware with industrial processing equipment in the background',
+    tone: 'slate',
   },
   paint: {
     src: u('photo-1538856627859-2a35dbc87d3a'),
