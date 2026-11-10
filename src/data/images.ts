@@ -38,7 +38,7 @@ export const images = {
   },
   detergent: {
     src: '/images/detergent.jpg',
-    alt: 'Liquid detergent chemical formulation with fine foam in laboratory glassware with industrial processing equipment in the background',
+    alt: 'Automated detergent cake manufacturing and packaging line with conveyor machinery',
     tone: 'slate',
   },
   paint: {
