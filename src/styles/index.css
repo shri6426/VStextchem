@@ -1,0 +1,100 @@
+@import '@fontsource-variable/manrope';
+@import 'tailwindcss';
+
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   Light corporate palette from the brief. Accent #B83D36 is used sparingly:
+   primary buttons, links, active states and small markers.               */
+@theme {
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-paper: #ffffff;
+  --color-mist: #f5f5f2;
+  --color-ink: #202522;
+  --color-ink-soft: #3a403c;
+  --color-muted: #646a65; /* darkened from #747A75 for AA contrast on #F5F5F2 */
+  --color-line: #e5e7e3;
+  --color-line-strong: #d3d6d0;
+  --color-accent: #b83d36;
+  --color-accent-dark: #9a312b;
+  --color-accent-tint: #f7ebe9;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  --container-site: 76rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: white;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-[var(--container-site)] px-4 sm:px-6 lg:px-8;
+  }
+  /* Small uppercase label used above section headings */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply block h-px w-6 bg-accent;
+  }
+  .code {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.25s ease;
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+}
+
+/* Thin technical grid used behind some sections */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(32 37 34 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(32 37 34 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
