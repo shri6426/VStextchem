@@ -22,8 +22,8 @@ export const images = {
     tone: 'slate',
   },
   textile: {
-    src: u('photo-1770196035129-0a0affd4a519'),
-    alt: 'Dyed blue yarn being processed on a textile machine',
+    src: '/images/textile.jpg',
+    alt: 'Industrial textile dyeing machines and fabric processing in a production facility',
     tone: 'slate',
   },
   textileAlt: {
@@ -42,9 +42,8 @@ export const images = {
     tone: 'slate',
   },
   paint: {
-    src: u('photo-1538856627859-2a35dbc87d3a'),
-    alt: 'Open containers of paint in assorted colours, viewed from above',
-    credit: 'Everson Mayer / Unsplash',
+    src: '/images/paint.jpg',
+    alt: 'Assorted open cans of vibrant colored paints arranged in rows',
     tone: 'clay',
   },
   agro: {
