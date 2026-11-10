@@ -40,8 +40,8 @@ export const products: Product[] = [
     ],
   },
   {
-    id: 'altex',
-    name: 'ALTEX',
+    id: 'altex-wvb',
+    name: 'ALTEX WVB',
     listings: [
       { industry: 'textile', category: 'Wetting Agents', description: 'Low-foaming nonionic wetting agent.' },
     ],
@@ -195,7 +195,8 @@ export const products: Product[] = [
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-export const productById = (id: string) => products.find((p) => p.id === id)
+export const productById = (id: string) =>
+  products.find((p) => p.id === id || (id === 'altex' && p.id === 'altex-wvb'))
 
 export const productsForIndustry = (industry: IndustryId) =>
   products.filter((p) => p.listings.some((l) => l.industry === industry))
