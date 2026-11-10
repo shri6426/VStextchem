@@ -22,26 +22,51 @@ export interface EnquiryPayload {
   message: string
 }
 
-const endpoint = (import.meta.env.VITE_ENQUIRY_ENDPOINT as string | undefined)?.trim() || ''
+const defaultEndpoint = 'https://formsubmit.co/ajax/texchemvs@gmail.com'
+const endpoint = (import.meta.env.VITE_ENQUIRY_ENDPOINT as string | undefined)?.trim() || defaultEndpoint
 const accessKey = (import.meta.env.VITE_ENQUIRY_ACCESS_KEY as string | undefined)?.trim() || ''
 
 export const isEnquiryConfigured = endpoint.length > 0
 
-export type SubmitResult = { ok: true } | { ok: false; reason: 'not-configured' | 'network' | 'rejected'; detail?: string }
+export type SubmitResult =
+  | { ok: true }
+  | { ok: false; reason: 'not-configured' | 'network' | 'rejected' | 'activation-needed'; detail?: string }
 
 export async function submitEnquiry(data: EnquiryPayload): Promise<SubmitResult> {
   if (!isEnquiryConfigured) return { ok: false, reason: 'not-configured' }
   try {
+    const payload = {
+      name: data.name,
+      company: data.company || 'Not specified',
+      email: data.email,
+      phone: data.phone || 'Not specified',
+      industry: data.industry || 'Not specified',
+      product: data.product || 'General Enquiry',
+      message: data.message,
+      subject: `Website enquiry: ${data.name}${data.product ? ` — ${data.product}` : ''}`,
+      _subject: `Website enquiry: ${data.name}${data.product ? ` — ${data.product}` : ''}`,
+      _template: 'table',
+      _captcha: 'false',
+      ...(accessKey ? { access_key: accessKey } : {}),
+    }
+
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        ...data,
-        subject: `Website enquiry${data.product ? ` — ${data.product}` : ''}`,
-        ...(accessKey ? { access_key: accessKey } : {}),
-      }),
+      body: JSON.stringify(payload),
     })
+
+    const result = await res.json().catch(() => null)
+
+    if (result && (result.success === 'false' || result.success === false)) {
+      if (result.message && /needs activation/i.test(result.message)) {
+        return { ok: false, reason: 'activation-needed', detail: result.message }
+      }
+      return { ok: false, reason: 'rejected', detail: result.message || 'Submission failed' }
+    }
+
     if (!res.ok) return { ok: false, reason: 'rejected', detail: `${res.status}` }
+
     return { ok: true }
   } catch (e) {
     return { ok: false, reason: 'network', detail: e instanceof Error ? e.message : undefined }

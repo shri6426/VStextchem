@@ -8,7 +8,7 @@ import { mailHref, whatsappHref } from '../utils/contact'
 import { buttonClass } from './ui'
 
 type Errors = Partial<Record<keyof EnquiryPayload, string>>
-type Status = 'idle' | 'submitting' | 'sent' | 'error' | 'not-configured'
+type Status = 'idle' | 'submitting' | 'sent' | 'error' | 'not-configured' | 'activation-needed'
 
 const OTHER = 'Other / not sure'
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -72,7 +72,15 @@ export function EnquiryForm({ initialProductId, initialIndustryId }: { initialPr
     }
     setStatus('submitting')
     const res = await submitEnquiry(data)
-    setStatus(res.ok ? 'sent' : res.reason === 'not-configured' ? 'not-configured' : 'error')
+    setStatus(
+      res.ok
+        ? 'sent'
+        : res.reason === 'activation-needed'
+          ? 'activation-needed'
+          : res.reason === 'not-configured'
+            ? 'not-configured'
+            : 'error'
+    )
     requestAnimationFrame(() => statusRef.current?.focus())
   }
 
@@ -162,6 +170,26 @@ export function EnquiryForm({ initialProductId, initialIndustryId }: { initialPr
       </div>
 
       <div ref={statusRef} tabIndex={-1} aria-live="polite" className="outline-none">
+        {status === 'activation-needed' && (
+          <div className="mt-6 border border-[#e3c9a3] bg-[#fbf5ea] p-5 text-sm">
+            <p className="flex items-start gap-2 font-semibold text-ink">
+              <AlertCircle aria-hidden className="mt-0.5 size-4 shrink-0 text-[#a86a12]" />
+              First-time setup: Form activation required.
+            </p>
+            <p className="mt-2 text-muted">
+              An activation email has been sent to <strong className="text-ink">{company.emails[0]}</strong>.
+              Please click the &quot;Activate Form&quot; link in that email to enable instant online delivery. In the meantime, you can send your enquiry directly:
+            </p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <a href={mailHref(company.emails[0], subject, summary)} className={buttonClass('primary')}>
+                <Mail aria-hidden className="size-4" /> Send directly by email
+              </a>
+              <a href={whatsappHref(`Hello ${company.brandName},\n\n${summary}`)} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary')}>
+                <MessageCircle aria-hidden className="size-4" /> Send on WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
         {status === 'not-configured' && (
           <div className="mt-6 border border-[#e3c9a3] bg-[#fbf5ea] p-5 text-sm">
             <p className="flex items-start gap-2 font-semibold text-ink">
